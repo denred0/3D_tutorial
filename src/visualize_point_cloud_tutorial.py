@@ -10,9 +10,28 @@ import open3d as o3d
 from my_utils import voxel_sampling
 
 
+# ------Google Colab Visualization----------
+
+# ### PyntCloud ###
+# conda install pyntcloud -c conda-forge
+# from pyntcloud import PyntCloud
+# pointcloud = PyntCloud.from_file("example.ply")
+# pointcloud.plot()
+# ### PyntCloud ###
+# pip install pypotree
+# import pypotree
+# import numpy as np
+# xyz = np.random.random((100000,3))
+# cloudpath = pypotree.generate_cloud_for_display(xyz)
+# pypotree.display_cloud_colab(cloudpath)
+
+# --------Google Colab Visualization--------
+
+
 def pptk_visualize(points, colors):
     v = pptk.viewer(points)
     v.attributes(colors / 65535)
+    v.set(point_size=0.001, bg_color=[0, 0, 0, 0], show_axis=0, show_grid=0)
 
 
 def open3d_visualize(points, colors):
