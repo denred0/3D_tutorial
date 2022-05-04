@@ -31,11 +31,20 @@ vox_mesh = o3d.geometry.TriangleMesh()
 
 # бежим по всем не пустым вокселям, создаем кубик (1, 1, 1), красим его в цвет вокселя и перемещаем на то место,
 # какие координаты у вокселя
+x_min = 100
+y_min = 100
+z_min = 100
 for v in tqdm(voxels):
     cube = o3d.geometry.TriangleMesh.create_box(width=1, height=1, depth=1)
     cube.paint_uniform_color(v.color)
     cube.translate(v.grid_index, relative=False)
+    if v.grid_index[0] < x_min: x_min = v.grid_index[0]
+    if v.grid_index[1] < y_min: y_min = v.grid_index[1]
+    if v.grid_index[2] < z_min: z_min = v.grid_index[2]
     vox_mesh += cube
+
+# начало координат для вокселей
+print([x_min, y_min, z_min])
 
 # когда создавали voxel_grid, то координатой вокселя был левый нижний угол. Передвинем на середину вокселя
 vox_mesh.translate([0.5, 0.5, 0.5], relative=True)
@@ -43,7 +52,9 @@ vox_mesh.translate([0.5, 0.5, 0.5], relative=True)
 # изменим размер, чтобы привести к размеру исходного облака точек
 vox_mesh.scale(voxel_size, [0, 0, 0])
 
-#передвинем в начало координат, хотя у нас и так воксели вроде на нужных местах уже стоят.
+# у исходного облака точек начало координат нвходится не в (0, 0, 0), а в voxel_grid.origin.
+# когда мы переводили в воксели, у нас все воксели начали отсчитываться из начала координат, точки (0, 0, 0)
+# передвинем наши кубы в меше в исходное начало коодинат -  voxel_grid.origin
 vox_mesh.translate(voxel_grid.origin, relative=True)
 
 # объединим пересекающиеся вершины
